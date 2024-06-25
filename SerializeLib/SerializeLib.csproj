@@ -4,6 +4,11 @@
         <TargetFramework>net6.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
+        <PackageId>MyloSoftworks.SerializeLib</PackageId>
+        <Title>SerializeLib</Title>
+        <Authors>GitMylo</Authors>
+        <Description>Quick and easy binary serialization and deserialization of classes</Description>
+        <Copyright>Mylo Softworks</Copyright>
     </PropertyGroup>
 
 </Project>
