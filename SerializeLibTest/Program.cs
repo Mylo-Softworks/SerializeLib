@@ -33,7 +33,7 @@ public static class Tests
             TestInt = 123,
             TestString = "I am a cool string! Yay!",
             TestFloat = 3.14f,
-            TestList = new List<int>() { 1, 2, 3 },
+            TestList = null,
             TestSubClass = new TestSubClass()
             {
                 TestBool = true,
@@ -53,14 +53,18 @@ public static class Tests
                 }
             }
         };
-        // Console.WriteLine(memoryStream.Length);
         
-        // memoryStream.Seek(0, SeekOrigin.Begin); // Reset
-        // var testInst = Serializer.Deserialize<TestClass>(memoryStream);
+        var stream = new MemoryStream();
+        Serializer.Serialize(obj, stream);
+        stream.Seek(0, SeekOrigin.Begin);
         
-        Serializer.SerializeToFile(obj, "TestClass.bin");
+        var testInst  = Serializer.Deserialize<TestClass>(stream);
         
-        var testInst = Serializer.DeserializeFromFile<TestClass>("TestClass.bin");
+        // Serializer.SerializeToFile(obj, "TestClass.bin");
+        //
+        // var testInst = Serializer.DeserializeFromFile<TestClass>("TestClass.bin");
+        
+        Console.WriteLine(String.Join(" ", stream.ToArray().Select(b => b + " ")));
         
         Console.WriteLine(String.Join(", ", testInst.TestList));
         Console.WriteLine(testInst.TestBool);

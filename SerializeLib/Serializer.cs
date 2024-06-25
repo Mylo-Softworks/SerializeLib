@@ -45,7 +45,7 @@ public static partial class Serializer
     private static void SerializeField(FieldInfo field, object obj, Stream s)
     {
         var val = field.GetValue(obj);
-        SerializeValue(val, s);
+        SerializeValue(val, s, field.FieldType);
     }
 
     private static void SerializeProperty(PropertyInfo property, object obj, Stream s)
@@ -54,10 +54,10 @@ public static partial class Serializer
             return;
         
         var val = property.GetValue(obj, null);
-        SerializeValue(val, s);
+        SerializeValue(val, s, property.PropertyType);
     }
 
-    public static void SerializeValue(object? v, Stream s)
+    public static void SerializeValue(object? v, Stream s, Type t)
     {
         // Static types
         switch (v)
@@ -105,8 +105,14 @@ public static partial class Serializer
                 return;
         }
 
-        if (v != null && IsGenericList(v.GetType()))
+        if (IsGenericList(t))
         {
+            if (v == null)
+            {
+                var zeroLen = new byte[] { 0, 0, 0, 0 };
+                s.Write(zeroLen);
+                return;
+            }
             var outList = new List<object>();
             if (v is IEnumerable enumerable)
             {
@@ -116,6 +122,13 @@ public static partial class Serializer
                 }
             }
             SerializeList(outList, s);
+            return;
+        }
+
+        if (v == null)
+        {
+            s.WriteByte(0);
+            return;
         }
         
         // Object
@@ -258,8 +271,8 @@ public static partial class Serializer
 
             // return list.OfType<?>().ToList();
             // Reflection
-            var function1 = typeof(Enumerable).GetMethod("OfType").MakeGenericMethod(listType);
-            var function2 = typeof(Enumerable).GetMethod("ToList").MakeGenericMethod(listType);
+            var function1 = typeof(Enumerable).GetMethod("OfType")!.MakeGenericMethod(listType);
+            var function2 = typeof(Enumerable).GetMethod("ToList")!.MakeGenericMethod(listType);
             
             var result1 = function1.Invoke(null, new []{ list });
             var result2 = function2.Invoke(null, new []{ result1 });

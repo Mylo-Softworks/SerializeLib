@@ -13,7 +13,7 @@ public static partial class Serializer
         
         foreach (var item in list)
         {
-            SerializeValue(item, s);
+            SerializeValue(item, s, typeof(T));
         }
     }
 
