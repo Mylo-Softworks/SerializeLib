@@ -27,8 +27,7 @@ public static class Tests
 {
     public static void Main()
     {
-        var memoryStream = new MemoryStream();
-        Serializer.Serialize(new TestClass()
+        var obj = new TestClass()
         {
             TestBool = true,
             TestInt = 123,
@@ -40,7 +39,7 @@ public static class Tests
                 TestBool = true,
                 TestString = "Another cool string!"
             },
-            TestSubClassList = new ()
+            TestSubClassList = new()
             {
                 new TestSubClass()
                 {
@@ -53,10 +52,16 @@ public static class Tests
                     TestString = "String 4!"
                 }
             }
-        }, memoryStream);
+        };
         // Console.WriteLine(memoryStream.Length);
-        memoryStream.Seek(0, SeekOrigin.Begin); // Reset
-        var testInst = Serializer.Deserialize<TestClass>(memoryStream);
+        
+        // memoryStream.Seek(0, SeekOrigin.Begin); // Reset
+        // var testInst = Serializer.Deserialize<TestClass>(memoryStream);
+        
+        Serializer.SerializeToFile(obj, "TestClass.bin");
+        
+        var testInst = Serializer.DeserializeFromFile<TestClass>("TestClass.bin");
+        
         Console.WriteLine(String.Join(", ", testInst.TestList));
         Console.WriteLine(testInst.TestBool);
         Console.WriteLine(String.Join(", ", testInst.TestSubClassList.Select(@class => @class.TestString)));
