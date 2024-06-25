@@ -13,10 +13,11 @@
         <PackageProjectUrl>https://github.com/Mylo-Softworks/SerializeLib</PackageProjectUrl>
         <PackageLicenseUrl>https://github.com/Mylo-Softworks/SerializeLib/blob/master/LICENSE</PackageLicenseUrl>
         <RepositoryUrl>https://github.com/Mylo-Softworks/SerializeLib</RepositoryUrl>
+        <PublishRepositoryUrl>true</PublishRepositoryUrl>
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0" PrivateAssets="All"/>
+        <PackageReference Include="Microsoft.SourceLink.GitHub" Version="8.0.0" PrivateAssets="All"/>
     </ItemGroup>
 
 </Project>
