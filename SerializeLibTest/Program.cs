@@ -20,6 +20,7 @@ internal class TestClass
 internal class TestSubClass
 {
     [SerializeField] public bool TestBool;
+    [SerializeField] public string TestString;
 }
 
 public static class Tests
@@ -36,17 +37,20 @@ public static class Tests
             TestList = new List<int>() { 1, 2, 3 },
             TestSubClass = new TestSubClass()
             {
-                TestBool = true
+                TestBool = true,
+                TestString = "Another cool string!"
             },
             TestSubClassList = new ()
             {
                 new TestSubClass()
                 {
-                    TestBool = true
+                    TestBool = true,
+                    TestString = "String 3!"
                 },
                 new TestSubClass()
                 {
-                    TestBool = false
+                    TestBool = false,
+                    TestString = "String 4!"
                 }
             }
         }, memoryStream);
@@ -55,6 +59,6 @@ public static class Tests
         var testInst = Serializer.Deserialize<TestClass>(memoryStream);
         Console.WriteLine(String.Join(", ", testInst.TestList));
         Console.WriteLine(testInst.TestBool);
-        Console.WriteLine(String.Join(", ", testInst.TestSubClassList.Select(@class => @class.TestBool)));
+        Console.WriteLine(String.Join(", ", testInst.TestSubClassList.Select(@class => @class.TestString)));
     }
 }

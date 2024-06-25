@@ -14,13 +14,7 @@ public static partial class Serializer
         
         foreach (var item in list)
         {
-            var contentStream = new MemoryStream();
-            SerializeValue(item, contentStream);
-            
-            // s.Write(BitConverter.GetBytes(contentStream.Length)); // Item size
-            
-            contentStream.Seek(0, SeekOrigin.Begin);
-            contentStream.CopyTo(s); // Item content
+            SerializeValue(item, s);
         }
     }
 
@@ -34,12 +28,6 @@ public static partial class Serializer
 
         for (int i = 0; i < count; i++)
         {
-            // var sizeBytes = new byte[4];
-            // s.Read(sizeBytes, 0, sizeBytes.Length); // Item size
-            // var size = BitConverter.ToInt32(sizeBytes, 0);
-            
-            // Console.WriteLine(size);
-
             list.Add(DeserializeValue(s, t));
         }
         
