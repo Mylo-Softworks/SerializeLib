@@ -13,7 +13,7 @@ public static partial class Serializer
         s.Write(bytes, 0, bytes.Length); // Then write the content
     }
 
-    public static string DeserializeString(Stream s)
+    private static string DeserializeString(Stream s)
     {
         var lengthBytes = new byte[4];
         s.Read(lengthBytes, 0, lengthBytes.Length);

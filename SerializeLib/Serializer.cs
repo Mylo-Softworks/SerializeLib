@@ -9,6 +9,13 @@ namespace SerializeLib;
 public static partial class Serializer
 {
     // First byte of object is 0 when null, 1 when not null
+    
+    /// <summary>
+    /// Serialize an object to a stream (type specified as generic).
+    /// </summary>
+    /// <param name="obj">The object to serialize.</param>
+    /// <param name="s">The stream to write to.</param>
+    /// <typeparam name="T">The type of the object to serialize.</typeparam>
     public static void Serialize<T>(T obj, Stream s)
     {
         var t = typeof(T);
@@ -21,7 +28,14 @@ public static partial class Serializer
             x.GetGenericTypeDefinition() == typeof(ISerializableClass<>));
     
     
-    
+    /// <summary>
+    /// Serialize an object to a stream (type specified as argument).
+    /// </summary>
+    /// <param name="obj">The object to serialize.</param>
+    /// <param name="t">The type of the object to serialize.</param>
+    /// <param name="s">The stream to write to.</param>
+    /// <param name="noError">Return when no attribute or interface is found instead of giving an error. You probably don't want to change this.</param>
+    /// <exception cref="ArgumentException">If the type isn't ISerializableClass and doesn't have SerializeClassAttribute.</exception>
     public static void Serialize(object? obj, Type t, Stream s, bool noError = false)
     {
         if (IsManualSerialized(t))
@@ -71,11 +85,23 @@ public static partial class Serializer
         SerializeValue(val, s, property.PropertyType);
     }
 
+    /// <summary>
+    /// Serialize a single value (type specified as generic).
+    /// </summary>
+    /// <param name="value">The value to serialize.</param>
+    /// <param name="s">The stream to write to.</param>
+    /// <typeparam name="T">The type of the value to be serialized.</typeparam>
     public static void SerializeValue<T>(T value, Stream s)
     {
         SerializeValue(value, s, typeof(T));
     }
 
+    /// <summary>
+    /// Serialize a signel value (type specified as argument).
+    /// </summary>
+    /// <param name="v">The value to serialize.</param>
+    /// <param name="s">The stream to write to.</param>
+    /// <param name="t">The type of the value to be serialized.</param>
     public static void SerializeValue(object? v, Stream s, Type t)
     {
         // Static types
@@ -154,12 +180,27 @@ public static partial class Serializer
         Serialize(v, v.GetType(), s, true);
     }
 
+    /// <summary>
+    /// Deserialize an object (generic).
+    /// </summary>
+    /// <param name="s">The stream to read from.</param>
+    /// <typeparam name="T">The type to deserialize into.</typeparam>
+    /// <returns>The deserialized object.</returns>
     public static T? Deserialize<T>(Stream s)
     {
         var t = typeof(T);
         return (T?)Deserialize(s, t);
     }
 
+    /// <summary>
+    /// Deserialize an object (not generic)
+    /// </summary>
+    /// <param name="s">The stream to read from.</param>
+    /// <param name="t">The type to deserialize into.</param>
+    /// <param name="noError">Return when no attribute or interface is found instead of giving an error. You probably don't want to change this.</param>
+    /// <returns>The deserialized object.</returns>
+    /// <exception cref="ArgumentException">If the type isn't ISerializableClass and doesn't have SerializeClassAttribute.</exception>
+    /// <exception cref="NullReferenceException">If the type cannot be instantiated without arguments. (No parameterless constructor available.)</exception>
     public static object? Deserialize(Stream s, Type t, bool noError = false)
     {
         if (IsManualSerialized(t))
@@ -205,11 +246,23 @@ public static partial class Serializer
         property.SetValue(objInst, DeserializeValue(s, property.PropertyType));
     }
 
+    /// <summary>
+    /// Deserialize a single value (Type specified as generic).
+    /// </summary>
+    /// <param name="s">The stream to read from.</param>
+    /// <typeparam name="T">The type to deserialize to.</typeparam>
+    /// <returns>The deserialized value.</returns>
     public static T? DeserializeValue<T>(Stream s)
     {
         return (T?)DeserializeValue(s, typeof(T));
     }
 
+    /// <summary>
+    /// Deserialize a single value (Type specified as argument).
+    /// </summary>
+    /// <param name="s">The stream to read from.</param>
+    /// <param name="t">The type to deserialize to.</param>
+    /// <returns>The deserialized value.</returns>
     public static object? DeserializeValue(Stream s, Type t)
     {
         // Single byte types
