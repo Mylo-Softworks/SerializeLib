@@ -2,6 +2,7 @@
 using System.Reflection;
 using System.Text;
 using SerializeLib.Attributes;
+using SerializeLib.Interfaces;
 
 namespace SerializeLib;
 
@@ -13,9 +14,22 @@ public static partial class Serializer
         var t = typeof(T);
         Serialize(obj, t, s);
     }
+
+    private static bool IsManualSerialized(Type t) =>
+        t.GetInterfaces().Any(x =>
+            x.IsGenericType &&
+            x.GetGenericTypeDefinition() == typeof(ISerializableClass<>));
+    
+    
     
     public static void Serialize(object? obj, Type t, Stream s, bool noError = false)
     {
+        if (IsManualSerialized(t))
+        {
+            t.GetMethod("Serialize")!.Invoke(obj, new object[] { s });
+            return;
+        }
+        
         if (t.GetCustomAttributes(typeof(SerializeClassAttribute), false).Length == 0)
             if (noError) return;
             else throw new ArgumentException("This type does not have a SerializeClassAttribute");
@@ -55,6 +69,11 @@ public static partial class Serializer
         
         var val = property.GetValue(obj, null);
         SerializeValue(val, s, property.PropertyType);
+    }
+
+    public static void SerializeValue<T>(T value, Stream s)
+    {
+        SerializeValue(value, s, typeof(T));
     }
 
     public static void SerializeValue(object? v, Stream s, Type t)
@@ -143,12 +162,17 @@ public static partial class Serializer
 
     public static object? Deserialize(Stream s, Type t, bool noError = false)
     {
-        // Read first byte
-        if (s.ReadByte() == 0) return null;
+        if (IsManualSerialized(t))
+        {
+            return t.GetMethod("Deserialize")!.Invoke(Activator.CreateInstance(t), new object[] { s }); // Creates a new instance, values can be assigned. Returning this as the value is not a requirement.
+        }
         
         if (t.GetCustomAttributes(typeof(SerializeClassAttribute), false).Length == 0)
             if (noError) return null;
             else throw new ArgumentException("This type does not have a SerializeClassAttribute");
+        
+        // Read first byte
+        if (s.ReadByte() == 0) return null;
         
         var objInst = Activator.CreateInstance(t);
         if (objInst == null) throw new NullReferenceException("Could not create instance of serializable object");
@@ -181,6 +205,11 @@ public static partial class Serializer
         property.SetValue(objInst, DeserializeValue(s, property.PropertyType));
     }
 
+    public static T? DeserializeValue<T>(Stream s)
+    {
+        return (T?)DeserializeValue(s, typeof(T));
+    }
+
     public static object? DeserializeValue(Stream s, Type t)
     {
         // Single byte types
@@ -196,14 +225,16 @@ public static partial class Serializer
         // 2 byte types
         if (t == typeof(short))
         {
-            var buffer = new byte[2];
-            s.Read(buffer, 0, 2);
+            var size = sizeof(short);
+            var buffer = new byte[size];
+            s.Read(buffer, 0, size);
             return BitConverter.ToInt16(buffer, 0);
         }
         if (t == typeof(ushort))
         {
-            var buffer = new byte[2];
-            s.Read(buffer, 0, 2);
+            var size = sizeof(ushort);
+            var buffer = new byte[size];
+            s.Read(buffer, 0, size);
             return BitConverter.ToUInt16(buffer, 0);
         }
         
@@ -211,21 +242,24 @@ public static partial class Serializer
         // Fixed
         if (t == typeof(int))
         {
-            var buffer = new byte[4];
-            s.Read(buffer, 0, 4);
+            var size = sizeof(int);
+            var buffer = new byte[size];
+            s.Read(buffer, 0, size);
             return BitConverter.ToInt32(buffer, 0);
         }
         if (t == typeof(uint))
         {
-            var buffer = new byte[4];
-            s.Read(buffer, 0, 4);
+            var size = sizeof(uint);
+            var buffer = new byte[size];
+            s.Read(buffer, 0, size);
             return BitConverter.ToUInt32(buffer, 0);
         }
         // Floating
         if (t == typeof(float))
         {
-            var buffer = new byte[4];
-            s.Read(buffer, 0, 4);
+            var size = sizeof(float);
+            var buffer = new byte[size];
+            s.Read(buffer, 0, size);
             return BitConverter.ToSingle(buffer, 0);
         }
         
@@ -233,28 +267,32 @@ public static partial class Serializer
         // Fixed
         if (t == typeof(long))
         {
-            var buffer = new byte[8];
-            s.Read(buffer, 0, 8);
+            var size = sizeof(long);
+            var buffer = new byte[size];
+            s.Read(buffer, 0, size);
             return BitConverter.ToInt64(buffer, 0);
         }
         if (t == typeof(ulong))
         {
-            var buffer = new byte[8];
-            s.Read(buffer, 0, 8);
+            var size = sizeof(ulong);
+            var buffer = new byte[size];
+            s.Read(buffer, 0, size);
             return BitConverter.ToUInt64(buffer, 0);
         }
         // Floating
         if (t == typeof(double))
         {
-            var buffer = new byte[8];
-            s.Read(buffer, 0, 8);
+            var size = sizeof(double);
+            var buffer = new byte[size];
+            s.Read(buffer, 0, size);
             return BitConverter.ToDouble(buffer, 0);
         }
         if (t == typeof(decimal))
         {
-            var buffer = new byte[8];
-            s.Read(buffer, 0, 8);
-            return (decimal)BitConverter.ToInt64(buffer, 0);
+            var size = sizeof(double); // As double because BitConverter doesn't support decimal
+            var buffer = new byte[size];
+            s.Read(buffer, 0, size);
+            return (decimal)BitConverter.ToDouble(buffer, 0);
         }
         
         // Dynamic size types

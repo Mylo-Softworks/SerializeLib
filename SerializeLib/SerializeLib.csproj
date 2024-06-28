@@ -14,6 +14,10 @@
         <PackageLicenseUrl>https://github.com/Mylo-Softworks/SerializeLib/blob/master/LICENSE</PackageLicenseUrl>
         <RepositoryUrl>https://github.com/Mylo-Softworks/SerializeLib</RepositoryUrl>
         <PublishRepositoryUrl>true</PublishRepositoryUrl>
+        <Version>1.0.1</Version>
+        <PackageReleaseNotes>Update 1.0.1
++ Add manual serialization using interfaces
++ Add generic overload methods for Serialize and Deserialize of values</PackageReleaseNotes>
     </PropertyGroup>
 
     <ItemGroup>

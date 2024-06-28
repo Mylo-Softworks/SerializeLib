@@ -1,6 +1,7 @@
 ﻿using System.Text;
 using SerializeLib;
 using SerializeLib.Attributes;
+using SerializeLib.Interfaces;
 
 namespace SerializeLibTest;
 
@@ -21,6 +22,22 @@ internal class TestSubClass
 {
     [SerializeField] public bool TestBool;
     [SerializeField] public string TestString;
+}
+
+internal class ManualSerializeClass : ISerializableClass<ManualSerializeClass>
+{
+    public int Number = 0;
+    public void Serialize(Stream s)
+    {
+        Serializer.SerializeValue(Number, s); // Generic, so type is auto-detected here
+    }
+
+    public ManualSerializeClass Deserialize(Stream s)
+    {
+        Number = Serializer.DeserializeValue<int>(s); // Generic, type is specified here
+        
+        return this;
+    }
 }
 
 public static class Tests
@@ -54,11 +71,16 @@ public static class Tests
             }
         };
         
+        var obj2 = new ManualSerializeClass()
+        {
+            Number = 123
+        };
+        
         var stream = new MemoryStream();
-        Serializer.Serialize(obj, stream);
+        Serializer.Serialize(obj2, stream);
         stream.Seek(0, SeekOrigin.Begin);
         
-        var testInst  = Serializer.Deserialize<TestClass>(stream);
+        var testInst = Serializer.Deserialize<ManualSerializeClass>(stream)!;
         
         // Serializer.SerializeToFile(obj, "TestClass.bin");
         //
@@ -66,8 +88,10 @@ public static class Tests
         
         Console.WriteLine(String.Join(" ", stream.ToArray().Select(b => b + " ")));
         
-        Console.WriteLine(String.Join(", ", testInst.TestList));
-        Console.WriteLine(testInst.TestBool);
-        Console.WriteLine(String.Join(", ", testInst.TestSubClassList.Select(@class => @class.TestString)));
+        Console.WriteLine(testInst.Number);
+        
+        // Console.WriteLine(String.Join(", ", testInst.TestList));
+        // Console.WriteLine(testInst.TestBool);
+        // Console.WriteLine(String.Join(", ", testInst.TestSubClassList.Select(@class => @class.TestString)));
     }
 }

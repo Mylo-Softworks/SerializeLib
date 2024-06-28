@@ -13,12 +13,36 @@ A library for serializing and deserializing in .net
 
 ## Usage
 ### Defining a serializable object
+
+1. With attributes (automatic)
 ```csharp
 using SerializeLib.Attributes;
 
 [SerializeClass]
 public class SerializationExample {
     [SerializeField] public bool ExampleBool;
+}
+```
+2. With interface (manual)  
+If you want to manually serialize data which can't be serialized yet, you can read/write the stream.  
+**Make 100% sure that you read EXACTLY as many bytes as you write. Failure to do so will fail to deserialize.**
+```csharp
+using SerializeLib.Interfaces;
+
+internal class ManualSerializeClass : ISerializableClass<ManualSerializeClass> {
+    public int Number = 0; // Lets serialize this int
+    
+    public void Serialize(Stream s)
+    {
+        Serializer.SerializeValue(Number, s); // Generic, so type is auto-detected here
+    }
+
+    public ManualSerializeClass Deserialize(Stream s)
+    {
+        Number = Serializer.DeserializeValue<int>(s); // Generic, type is specified here
+        
+        return this; // "return this;" is not a hard requirement, in some cases, you might want to return something else.
+    }
 }
 ```
 
