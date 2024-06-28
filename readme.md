@@ -4,9 +4,9 @@ A library for serializing and deserializing in .net
 ## Supported types
 * Primitives
   * bool, string, byte, short, int, long, float, double, decimal (and unsigned variants).
-* Lists
-  * Lists can contain any supported types.
-  * **Note**: Lists with value of `null` will be deserialized as an empty list.
+* Lists + arrays
+  * Lists and arrays can contain any supported types.
+  * **Note**: Lists/arrays with value of `null` will be deserialized as an empty list/array.
 * Objects
   * Any object which has the \[SerializeClass] attribute can be serialized as a field as well.
   * Objects with value of `null` will be deserialized as `null` as expected.

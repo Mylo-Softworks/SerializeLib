@@ -150,7 +150,7 @@ public static partial class Serializer
                 return;
         }
 
-        if (IsGenericList(t))
+        if (IsGenericList(t) || IsGenericArray(t))
         {
             if (v == null)
             {
@@ -370,11 +370,30 @@ public static partial class Serializer
             return result2;
         }
 
+        if (IsGenericArray(t))
+        {
+            var elementType = t.GetElementType();
+            var list = DeserializeList(s, elementType);
+            
+            var function1 = typeof(Enumerable).GetMethod("OfType")!.MakeGenericMethod(elementType);
+            var function2 = typeof(Enumerable).GetMethod("ToArray")!.MakeGenericMethod(elementType);
+            
+            var result1 = function1.Invoke(null, new []{ list });
+            var result2 = function2.Invoke(null, new []{ result1 });
+            
+            return result2;
+        }
+
         return Deserialize(s, t, true);
     }
     
     private static bool IsGenericList(Type t)
     {
         return t.IsGenericType && t.GetGenericTypeDefinition() == typeof(List<>);
+    }
+
+    private static bool IsGenericArray(Type t)
+    {
+        return t.IsArray;
     }
 }
