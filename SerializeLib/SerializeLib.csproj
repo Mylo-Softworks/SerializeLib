@@ -14,9 +14,9 @@
         <PackageLicenseUrl>https://github.com/Mylo-Softworks/SerializeLib/blob/master/LICENSE</PackageLicenseUrl>
         <RepositoryUrl>https://github.com/Mylo-Softworks/SerializeLib</RepositoryUrl>
         <PublishRepositoryUrl>true</PublishRepositoryUrl>
-        <Version>1.0.3</Version>
+        <Version>1.0.4</Version>
         <PackageReleaseNotes>Update 1.0.3
-+ Add proper support for arrays, instead of just lists</PackageReleaseNotes>
++ Build dll as debug to prevent documentation from being removed</PackageReleaseNotes>
         <PackageTags>serialization</PackageTags>
     </PropertyGroup>
 
