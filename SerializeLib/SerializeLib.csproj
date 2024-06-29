@@ -14,14 +14,22 @@
         <PackageLicenseUrl>https://github.com/Mylo-Softworks/SerializeLib/blob/master/LICENSE</PackageLicenseUrl>
         <RepositoryUrl>https://github.com/Mylo-Softworks/SerializeLib</RepositoryUrl>
         <PublishRepositoryUrl>true</PublishRepositoryUrl>
-        <Version>1.0.4</Version>
-        <PackageReleaseNotes>Update 1.0.4
-+ Build dll as debug to prevent documentation from being removed</PackageReleaseNotes>
+        <Version>1.0.5</Version>
+        <PackageReleaseNotes>Update 1.0.5
++ Include xml documentation in nupkg</PackageReleaseNotes>
         <PackageTags>serialization</PackageTags>
+        
+    </PropertyGroup>
+
+    <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
+      <DocumentationFile>bin\Debug\SerializeLib.xml</DocumentationFile>
     </PropertyGroup>
 
     <ItemGroup>
         <PackageReference Include="Microsoft.SourceLink.GitHub" Version="8.0.0" PrivateAssets="All"/>
+        <None Include="bin\Debug\SerializeLib.xml" Pack="true">
+            <PackageCopyToOutput>true</PackageCopyToOutput>
+        </None>
     </ItemGroup>
 
 </Project>
