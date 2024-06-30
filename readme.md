@@ -78,7 +78,7 @@ var exampleObject = Serializer.Deserialize<SerializationExample>(stream);
 
 // Deserialize from a byte[]
 var bytes = new byte[0]; // In practice, this should be a byte array with the serialized bytes
-var exampleObject = Serializer.Deserialize<SerializationExample>();
+var exampleObject = Serializer.Deserialize<SerializationExample>(bytes);
 
 // Deserialize from a file
 var exampleObject = Serializer.DeserializeFromFile<SerializationExample>("filename.bin");
