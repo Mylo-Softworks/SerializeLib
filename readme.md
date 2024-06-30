@@ -1,4 +1,4 @@
-[![NuGet Downloads](https://img.shields.io/nuget/dt/MyloSoftworks.SerializeLib)](https://www.nuget.org/packages/MyloSoftworks.SerializeLib/)
+[![NuGet Downloads](https://img.shields.io/nuget/dt/MyloSoftworks.SerializeLib)](https://www.nuget.org/packages/MyloSoftworks.SerializeLib/) [![Read the Docs](https://img.shields.io/readthedocs/serializelib)](https://serializelib.readthedocs.io/)
  
 # SerializeLib
 A library for serializing and deserializing in .net
