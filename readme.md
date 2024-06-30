@@ -1,4 +1,6 @@
-﻿# SerializeLib
+[![NuGet Downloads](https://img.shields.io/nuget/dt/MyloSoftworks.SerializeLib)](https://www.nuget.org/packages/MyloSoftworks.SerializeLib/)
+ 
+# SerializeLib
 A library for serializing and deserializing in .net
 
 ## Supported types
