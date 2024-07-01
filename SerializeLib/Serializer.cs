@@ -26,6 +26,37 @@ public static partial class Serializer
         t.GetInterfaces().Any(x =>
             x.IsGenericType &&
             x.GetGenericTypeDefinition() == typeof(ISerializableClass<>));
+
+    private static Dictionary<Type, object> _overrides = new ();
+
+    /// <summary>
+    /// Register a new override to be used.
+    /// </summary>
+    /// <param name="o">The override to use.</param>
+    /// <typeparam name="T">The type to override for.</typeparam>
+    public static void RegisterOverride<T>(ISerializableOverride<T>? o)
+    {
+        if (o == null)
+        {
+            _overrides.Remove(typeof(T));
+            return;
+        }
+        _overrides[typeof(T)] = o;
+    }
+
+    /// <summary>
+    /// Register a new override to be used.
+    /// </summary>
+    /// <param name="o"></param>
+    public static void RegisterOverride<T, TS>() where T : ISerializableOverride<TS>
+    {
+        var o = Activator.CreateInstance(typeof(T))!;
+        _overrides[typeof(TS)] = o;
+    }
+
+    private static bool IsRegisteredOverride(Type t) =>
+        _overrides.ContainsKey(t);
+    
     
     
     /// <summary>
@@ -41,6 +72,13 @@ public static partial class Serializer
         if (IsManualSerialized(t))
         {
             t.GetMethod("Serialize")!.Invoke(obj, new object[] { s });
+            return;
+        }
+
+        if (IsRegisteredOverride(t))
+        {
+            var over = _overrides[t];
+            over.GetType().GetMethod("Serialize")!.Invoke(over, new object[] { obj, s });
             return;
         }
         
@@ -206,6 +244,12 @@ public static partial class Serializer
         if (IsManualSerialized(t))
         {
             return t.GetMethod("Deserialize")!.Invoke(Activator.CreateInstance(t), new object[] { s }); // Creates a new instance, values can be assigned. Returning this as the value is not a requirement.
+        }
+        
+        if (IsRegisteredOverride(t))
+        {
+            var over = _overrides[t];
+            return over.GetType().GetMethod("Deserialize")!.Invoke(over, new object[] { s });
         }
         
         if (t.GetCustomAttributes(typeof(SerializeClassAttribute), false).Length == 0)

@@ -14,9 +14,9 @@
         <PackageLicenseUrl>https://github.com/Mylo-Softworks/SerializeLib/blob/master/LICENSE</PackageLicenseUrl>
         <RepositoryUrl>https://github.com/Mylo-Softworks/SerializeLib</RepositoryUrl>
         <PublishRepositoryUrl>true</PublishRepositoryUrl>
-        <Version>1.0.5</Version>
-        <PackageReleaseNotes>Update 1.0.5
-+ Include xml documentation in nupkg</PackageReleaseNotes>
+        <Version>1.0.6</Version>
+        <PackageReleaseNotes>Update 1.0.6
++ Add ISerializableOverride interface</PackageReleaseNotes>
         <PackageTags>serialization</PackageTags>
         
     </PropertyGroup>

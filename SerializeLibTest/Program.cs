@@ -16,6 +16,7 @@ internal class TestClass
     [SerializeField] public TestSubClass TestSubClass;
     [SerializeField] public List<TestSubClass> TestSubClassList;
     [SerializeField] public int[] TestArray;
+    [SerializeField] public Guid TestGuid;
 }
 
 [SerializeClass]
@@ -41,10 +42,31 @@ internal class ManualSerializeClass : ISerializableClass<ManualSerializeClass>
     }
 }
 
+public class GuidSerializeOverride : ISerializableOverride<Guid>
+{
+    private int size = 16;
+    
+    public void Serialize(Guid target, Stream s)
+    {
+        s.Write(target.ToByteArray());
+    }
+
+    public Guid Deserialize(Stream s)
+    {
+        var buffer = new byte[size];
+        s.Read(buffer, 0, buffer.Length);
+        return new Guid(buffer);
+    }
+}
+
 public static class Tests
 {
     public static void Main()
     {
+        // Register override
+        Serializer.RegisterOverride<GuidSerializeOverride, Guid>();
+        // Serializer.RegisterOverride(new GuidSerializeOverride());
+        
         var obj = new TestClass()
         {
             TestBool = true,
@@ -73,7 +95,8 @@ public static class Tests
             TestArray = new []
             {
                 0, 1, 2
-            }
+            },
+            TestGuid = Guid.NewGuid()
         };
         
         var obj2 = new ManualSerializeClass()
@@ -93,7 +116,8 @@ public static class Tests
         
         // Console.WriteLine(String.Join(" ", stream.ToArray().Select(b => b + " ")));
         
-        Console.WriteLine(testInst.TestArray[1]);
+        Console.WriteLine(obj.TestGuid);
+        Console.WriteLine(testInst.TestGuid);
         
         // Console.WriteLine(String.Join(", ", testInst.TestList));
         // Console.WriteLine(testInst.TestBool);
