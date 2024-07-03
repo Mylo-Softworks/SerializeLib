@@ -8,22 +8,22 @@ namespace SerializeLibTest;
 [SerializeClass]
 internal class TestClass
 {
-    [SerializeField] public bool TestBool;
-    [SerializeField] public int TestInt;
-    [SerializeField] public string TestString;
-    [SerializeField] public float TestFloat;
-    [SerializeField] public List<int> TestList;
-    [SerializeField] public TestSubClass TestSubClass;
-    [SerializeField] public List<TestSubClass> TestSubClassList;
-    [SerializeField] public int[] TestArray;
-    [SerializeField] public Guid TestGuid;
+    [SerializeField(0)] public bool TestBool;
+    [SerializeField(1)] public int TestInt;
+    [SerializeField(2)] public string TestString;
+    [SerializeField(3)] public float TestFloat;
+    [SerializeField(4)] public List<int> TestList;
+    [SerializeField(5)] public TestSubClass TestSubClass;
+    [SerializeField(6)] public List<TestSubClass> TestSubClassList;
+    [SerializeField(7)] public int[] TestArray;
+    [SerializeField(8)] public Guid TestGuid;
 }
 
 [SerializeClass]
 internal class TestSubClass
 {
-    [SerializeField] public bool TestBool;
-    [SerializeField] public string TestString;
+    [SerializeField(0)] public bool TestBool;
+    [SerializeField(1)] public string TestString;
 }
 
 internal class ManualSerializeClass : ISerializableClass<ManualSerializeClass>
@@ -122,5 +122,19 @@ public static class Tests
         // Console.WriteLine(String.Join(", ", testInst.TestList));
         // Console.WriteLine(testInst.TestBool);
         // Console.WriteLine(String.Join(", ", testInst.TestSubClassList.Select(@class => @class.TestString)));
+    }
+    
+    [SerializeClass]
+    public class KotlinClass
+    {
+        [SerializeField(0)] public string TestVar;
+        
+        [SerializeField(1)] public List<int> TestList;
+    }
+
+    public static void MainTest2()
+    {
+        var testInst = Serializer.DeserializeFromFile<KotlinClass>("test.bin");
+        Console.WriteLine(testInst.TestList.Count);
     }
 }

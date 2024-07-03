@@ -22,7 +22,7 @@ using SerializeLib.Attributes;
 
 [SerializeClass]
 public class SerializationExample {
-    [SerializeField] public bool ExampleBool;
+    [SerializeField(0)] public bool ExampleBool;
 }
 ```
 2. With interface (manual)  

@@ -6,7 +6,7 @@
 [AttributeUsage(AttributeTargets.Class | AttributeTargets.Struct | AttributeTargets.Enum, Inherited = false)]
 public class SerializeClassAttribute : Attribute
 {
-    public SerializeClassAttribute() {}
+    
 }
 
 /// <summary>
@@ -15,5 +15,13 @@ public class SerializeClassAttribute : Attribute
 [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property, Inherited = false)]
 public class SerializeFieldAttribute : Attribute
 {
-    public SerializeFieldAttribute() {}
+    /// <summary>
+    /// Indicate an order for this attribute
+    /// </summary>
+    public int Order;
+
+    public SerializeFieldAttribute(int order)
+    {
+        Order = order;
+    }
 }

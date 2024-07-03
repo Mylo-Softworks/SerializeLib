@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+using System.Collections.Immutable;
 using System.Reflection;
 using System.Text;
 using SerializeLib.Attributes;
@@ -93,15 +94,34 @@ public static partial class Serializer
         }
         s.WriteByte(1);
 
+        // Fields
+        var fields = new List<(int, FieldInfo)>();
         foreach (var fieldInfo in t.GetFields())
         {
-            if (fieldInfo.GetCustomAttributes(typeof(SerializeFieldAttribute), false).Length == 0) continue;
+            var attribute = fieldInfo.GetCustomAttributes(typeof(SerializeFieldAttribute), false);
+            if (attribute.Length == 0) continue;
+            fields.Add(((attribute[0] as SerializeFieldAttribute).Order, fieldInfo));
+        }
+        
+        fields.Sort((a, b) => a.Item1.CompareTo(b.Item1));
+        foreach (var fieldInfo in fields.Select(tuple => tuple.Item2))
+        {
             SerializeField(fieldInfo, obj, s);
         }
 
+        // Properties
+        var properties = new List<(int, PropertyInfo)>();
         foreach (var propertyInfo in t.GetProperties())
         {
-            if (propertyInfo.GetCustomAttributes(typeof(SerializeFieldAttribute), false).Length == 0) continue;
+            var attribute = propertyInfo.GetCustomAttributes(typeof(SerializeFieldAttribute), false);
+            if (attribute.Length == 0) continue;
+            
+            properties.Add(((attribute[0] as SerializeFieldAttribute).Order, propertyInfo));
+        }
+        
+        properties.Sort((a, b) => a.Item1.CompareTo(b.Item1));
+        foreach (var propertyInfo in properties.Select(tuple => tuple.Item2))
+        {
             SerializeProperty(propertyInfo, obj, s);
         }
         
@@ -262,15 +282,34 @@ public static partial class Serializer
         var objInst = Activator.CreateInstance(t);
         if (objInst == null) throw new NullReferenceException("Could not create instance of serializable object");
         
+        // Fields
+        var fields = new List<(int, FieldInfo)>();
         foreach (var fieldInfo in t.GetFields())
         {
-            if (fieldInfo.GetCustomAttributes(typeof(SerializeFieldAttribute), false).Length == 0) continue;
+            var attribute = fieldInfo.GetCustomAttributes(typeof(SerializeFieldAttribute), false);
+            if (attribute.Length == 0) continue;
+            fields.Add(((attribute[0] as SerializeFieldAttribute).Order, fieldInfo));
+        }
+        
+        fields.Sort((a, b) => a.Item1.CompareTo(b.Item1));
+        foreach (var fieldInfo in fields.Select(tuple => tuple.Item2))
+        {
             DeserializeField(fieldInfo, s, objInst);
         }
 
+        // Properties
+        var properties = new List<(int, PropertyInfo)>();
         foreach (var propertyInfo in t.GetProperties())
         {
-            if (propertyInfo.GetCustomAttributes(typeof(SerializeFieldAttribute), false).Length == 0) continue;
+            var attribute = propertyInfo.GetCustomAttributes(typeof(SerializeFieldAttribute), false);
+            if (attribute.Length == 0) continue;
+            
+            properties.Add(((attribute[0] as SerializeFieldAttribute).Order, propertyInfo));
+        }
+        
+        properties.Sort((a, b) => a.Item1.CompareTo(b.Item1));
+        foreach (var propertyInfo in properties.Select(tuple => tuple.Item2))
+        {
             DeserializeProperty(propertyInfo, s, objInst);
         }
 
