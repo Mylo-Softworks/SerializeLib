@@ -65,7 +65,7 @@ Serializer.Serialize(exampleObject, stream);
 var bytes = Serializer.Serialize(exampleObject);
 
 // Serialize and write to file
-Serialize.SerializeToFile(exampleObject, "filename.bin")
+Serializer.SerializeToFile(exampleObject, "filename.bin")
 ```
 
 ### Deserializing the object
