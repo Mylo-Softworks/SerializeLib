@@ -98,9 +98,9 @@ public static partial class Serializer
         var fields = new List<(int, FieldInfo)>();
         foreach (var fieldInfo in t.GetFields())
         {
-            var attribute = fieldInfo.GetCustomAttributes(typeof(SerializeFieldAttribute), false);
-            if (attribute.Length == 0) continue;
-            fields.Add(((attribute[0] as SerializeFieldAttribute).Order, fieldInfo));
+            var attribute = fieldInfo.GetCustomAttribute(typeof(SerializeFieldAttribute), false);
+            if (attribute == null) continue;
+            fields.Add(((attribute as SerializeFieldAttribute).Order, fieldInfo));
         }
         
         fields.Sort((a, b) => a.Item1.CompareTo(b.Item1));
@@ -113,10 +113,10 @@ public static partial class Serializer
         var properties = new List<(int, PropertyInfo)>();
         foreach (var propertyInfo in t.GetProperties())
         {
-            var attribute = propertyInfo.GetCustomAttributes(typeof(SerializeFieldAttribute), false);
-            if (attribute.Length == 0) continue;
+            var attribute = propertyInfo.GetCustomAttribute(typeof(SerializeFieldAttribute), false);
+            if (attribute == null) continue;
             
-            properties.Add(((attribute[0] as SerializeFieldAttribute).Order, propertyInfo));
+            properties.Add(((attribute as SerializeFieldAttribute).Order, propertyInfo));
         }
         
         properties.Sort((a, b) => a.Item1.CompareTo(b.Item1));
@@ -286,9 +286,9 @@ public static partial class Serializer
         var fields = new List<(int, FieldInfo)>();
         foreach (var fieldInfo in t.GetFields())
         {
-            var attribute = fieldInfo.GetCustomAttributes(typeof(SerializeFieldAttribute), false);
-            if (attribute.Length == 0) continue;
-            fields.Add(((attribute[0] as SerializeFieldAttribute).Order, fieldInfo));
+            var attribute = fieldInfo.GetCustomAttribute(typeof(SerializeFieldAttribute), false);
+            if (attribute == null) continue;
+            fields.Add(((attribute as SerializeFieldAttribute).Order, fieldInfo));
         }
         
         fields.Sort((a, b) => a.Item1.CompareTo(b.Item1));
@@ -301,10 +301,10 @@ public static partial class Serializer
         var properties = new List<(int, PropertyInfo)>();
         foreach (var propertyInfo in t.GetProperties())
         {
-            var attribute = propertyInfo.GetCustomAttributes(typeof(SerializeFieldAttribute), false);
-            if (attribute.Length == 0) continue;
+            var attribute = propertyInfo.GetCustomAttribute(typeof(SerializeFieldAttribute), false);
+            if (attribute == null) continue;
             
-            properties.Add(((attribute[0] as SerializeFieldAttribute).Order, propertyInfo));
+            properties.Add(((attribute as SerializeFieldAttribute).Order, propertyInfo));
         }
         
         properties.Sort((a, b) => a.Item1.CompareTo(b.Item1));
