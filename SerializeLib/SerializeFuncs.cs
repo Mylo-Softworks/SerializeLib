@@ -11,7 +11,7 @@ public static partial class Serializer
     public static byte[] Serialize<T>(T o)
     {
         using var stream = new MemoryStream();
-        Serialize(o, stream);
+        SerializeValue(o, stream);
         return stream.ToArray();
     }
 
@@ -24,7 +24,7 @@ public static partial class Serializer
     public static byte[] Serialize(object? o, Type t)
     {
         using var stream = new MemoryStream();
-        Serialize(o, t, stream);
+        SerializeValue(o, stream, t);
         return stream.ToArray();
     }
 
@@ -37,7 +37,7 @@ public static partial class Serializer
     public static T? Deserialize<T>(byte[] bytes)
     {
         using var stream = new MemoryStream(bytes);
-        return Deserialize<T>(stream);
+        return DeserializeValue<T>(stream);
     }
 
     /// <summary>
@@ -49,7 +49,7 @@ public static partial class Serializer
     public static object? Deserialize(byte[] bytes, Type t)
     {
         using var stream = new MemoryStream(bytes);
-        return Deserialize(stream, t);
+        return DeserializeValue(stream, t);
     }
 
     /// <summary>
@@ -61,7 +61,7 @@ public static partial class Serializer
     public static void SerializeToFile<T>(T o, string path)
     {
         using var stream = new FileStream(path, FileMode.Create, FileAccess.Write);
-        Serialize(o, stream);
+        SerializeValue(o, stream);
     }
 
     /// <summary>
@@ -73,7 +73,7 @@ public static partial class Serializer
     public static void SerializeToFile(object o, Type t, string path)
     {
         using var stream = new FileStream(path, FileMode.Create, FileAccess.Write);
-        Serialize(o, t);
+        SerializeValue(o, stream, t);
     }
     
     /// <summary>
@@ -85,7 +85,7 @@ public static partial class Serializer
     public static T? DeserializeFromFile<T>(string path)
     {
         using var stream = new FileStream(path, FileMode.Open, FileAccess.Read);
-        return Deserialize<T>(stream);
+        return DeserializeValue<T>(stream);
     }
 
     /// <summary>
@@ -97,6 +97,6 @@ public static partial class Serializer
     public static object? DeserializeFromFile(string path, Type t)
     {
         using var stream = new FileStream(path, FileMode.Open, FileAccess.Read);
-        return Deserialize(stream, t);
+        return DeserializeValue(stream, t);
     }
 }
