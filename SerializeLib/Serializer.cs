@@ -57,7 +57,9 @@ public static partial class Serializer
 
     private static bool IsRegisteredOverride(Type t) =>
         _overrides.ContainsKey(t);
-    
+
+    private static bool NullIndicatorNeeded(Type t) =>
+        !t.IsValueType;
     
     
     /// <summary>
@@ -86,13 +88,17 @@ public static partial class Serializer
         if (t.GetCustomAttributes(typeof(SerializeClassAttribute), false).Length == 0)
             if (noError) return;
             else throw new ArgumentException("This type does not have a SerializeClassAttribute");
-        
-        if (obj == null)
+
+        // Null indicator
+        if (NullIndicatorNeeded(t))
         {
-            s.WriteByte(0);
-            return;
+            if (obj == null)
+            {
+                s.WriteByte(0);
+                return;
+            }
+            s.WriteByte(1);
         }
-        s.WriteByte(1);
 
         // Fields
         var fields = new List<(int, FieldInfo)>();
@@ -275,9 +281,13 @@ public static partial class Serializer
         if (t.GetCustomAttributes(typeof(SerializeClassAttribute), false).Length == 0)
             if (noError) return null;
             else throw new ArgumentException("This type does not have a SerializeClassAttribute");
-        
-        // Read first byte
-        if (s.ReadByte() == 0) return null;
+
+        // Null check
+        if (NullIndicatorNeeded(t))
+        {
+            // Read first byte
+            if (s.ReadByte() == 0) return null;
+        }
         
         var objInst = Activator.CreateInstance(t);
         if (objInst == null) throw new NullReferenceException("Could not create instance of serializable object");
