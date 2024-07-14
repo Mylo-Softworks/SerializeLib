@@ -104,6 +104,8 @@ public static class Tests
             Number = 123
         };
         
+        Serializer.UseBigEndian = true;
+        
         var stream = new MemoryStream();
         Serializer.Serialize(obj, stream);
         stream.Seek(0, SeekOrigin.Begin);
@@ -116,8 +118,8 @@ public static class Tests
         
         // Console.WriteLine(String.Join(" ", stream.ToArray().Select(b => b + " ")));
         
-        Console.WriteLine(obj.TestGuid);
-        Console.WriteLine(testInst.TestGuid);
+        Console.WriteLine(obj.TestInt);
+        Console.WriteLine(testInst.TestInt);
         
         // Console.WriteLine(String.Join(", ", testInst.TestList));
         // Console.WriteLine(testInst.TestBool);

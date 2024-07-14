@@ -9,6 +9,24 @@ namespace SerializeLib;
 
 public static partial class Serializer
 {
+    /// <summary>
+    /// Indicates whether to use little or big endian.
+    /// </summary>
+    public static bool UseBigEndian = !BitConverter.IsLittleEndian;
+
+    /// <summary>
+    /// Convert a byte[] to the selected endianness.
+    /// </summary>
+    /// <param name="bytes">The source byte[].</param>
+    /// <param name="isBigEndian">Indicates if the source is big endian. Or null to use the system endianness.</param>
+    /// <returns>The source byte[] if the endianness is correct, a flipped byte[] if it was not.</returns>
+    public static byte[] ConvertEndianNess(this byte[] bytes, bool? isBigEndian = null)
+    {
+        isBigEndian ??= !BitConverter.IsLittleEndian;
+        if (isBigEndian == UseBigEndian) return bytes;
+        return bytes.Reverse().ToArray();
+    }
+    
     // First byte of object is 0 when null, 1 when not null
     
     /// <summary>
@@ -178,31 +196,31 @@ public static partial class Serializer
                 s.WriteByte(vByte);
                 return;
             case short vShort:
-                s.Write(BitConverter.GetBytes(vShort));
+                s.Write(BitConverter.GetBytes(vShort).ConvertEndianNess());
                 return;
             case ushort vUShort:
-                s.Write(BitConverter.GetBytes(vUShort));
+                s.Write(BitConverter.GetBytes(vUShort).ConvertEndianNess());
                 return;
             case int vInt:
-                s.Write(BitConverter.GetBytes(vInt));
+                s.Write(BitConverter.GetBytes(vInt).ConvertEndianNess());
                 return;
             case uint vUInt:
-                s.Write(BitConverter.GetBytes(vUInt));
+                s.Write(BitConverter.GetBytes(vUInt).ConvertEndianNess());
                 return;
             case long vLong:
-                s.Write(BitConverter.GetBytes(vLong));
+                s.Write(BitConverter.GetBytes(vLong).ConvertEndianNess());
                 return;
             case ulong vULong:
-                s.Write(BitConverter.GetBytes(vULong));
+                s.Write(BitConverter.GetBytes(vULong).ConvertEndianNess());
                 return;
             case float vFloat:
-                s.Write(BitConverter.GetBytes(vFloat));
+                s.Write(BitConverter.GetBytes(vFloat).ConvertEndianNess());
                 return;
             case double vDouble:
-                s.Write(BitConverter.GetBytes(vDouble));
+                s.Write(BitConverter.GetBytes(vDouble).ConvertEndianNess());
                 return;
             case decimal vDecimal:
-                s.Write(BitConverter.GetBytes((double)vDecimal));
+                s.Write(BitConverter.GetBytes((double)vDecimal).ConvertEndianNess());
                 return;
         }
         
@@ -374,14 +392,14 @@ public static partial class Serializer
             var size = sizeof(short);
             var buffer = new byte[size];
             s.Read(buffer, 0, size);
-            return BitConverter.ToInt16(buffer, 0);
+            return BitConverter.ToInt16(buffer.ConvertEndianNess(), 0);
         }
         if (t == typeof(ushort))
         {
             var size = sizeof(ushort);
             var buffer = new byte[size];
             s.Read(buffer, 0, size);
-            return BitConverter.ToUInt16(buffer, 0);
+            return BitConverter.ToUInt16(buffer.ConvertEndianNess(), 0);
         }
         
         // 4 byte types
@@ -391,14 +409,14 @@ public static partial class Serializer
             var size = sizeof(int);
             var buffer = new byte[size];
             s.Read(buffer, 0, size);
-            return BitConverter.ToInt32(buffer, 0);
+            return BitConverter.ToInt32(buffer.ConvertEndianNess(), 0);
         }
         if (t == typeof(uint))
         {
             var size = sizeof(uint);
             var buffer = new byte[size];
             s.Read(buffer, 0, size);
-            return BitConverter.ToUInt32(buffer, 0);
+            return BitConverter.ToUInt32(buffer.ConvertEndianNess(), 0);
         }
         // Floating
         if (t == typeof(float))
@@ -406,7 +424,7 @@ public static partial class Serializer
             var size = sizeof(float);
             var buffer = new byte[size];
             s.Read(buffer, 0, size);
-            return BitConverter.ToSingle(buffer, 0);
+            return BitConverter.ToSingle(buffer.ConvertEndianNess(), 0);
         }
         
         // 8 byte types
@@ -416,14 +434,14 @@ public static partial class Serializer
             var size = sizeof(long);
             var buffer = new byte[size];
             s.Read(buffer, 0, size);
-            return BitConverter.ToInt64(buffer, 0);
+            return BitConverter.ToInt64(buffer.ConvertEndianNess(), 0);
         }
         if (t == typeof(ulong))
         {
             var size = sizeof(ulong);
             var buffer = new byte[size];
             s.Read(buffer, 0, size);
-            return BitConverter.ToUInt64(buffer, 0);
+            return BitConverter.ToUInt64(buffer.ConvertEndianNess(), 0);
         }
         // Floating
         if (t == typeof(double))
@@ -431,14 +449,14 @@ public static partial class Serializer
             var size = sizeof(double);
             var buffer = new byte[size];
             s.Read(buffer, 0, size);
-            return BitConverter.ToDouble(buffer, 0);
+            return BitConverter.ToDouble(buffer.ConvertEndianNess(), 0);
         }
         if (t == typeof(decimal))
         {
             var size = sizeof(double); // As double because BitConverter doesn't support decimal
             var buffer = new byte[size];
             s.Read(buffer, 0, size);
-            return (decimal)BitConverter.ToDouble(buffer, 0);
+            return (decimal)BitConverter.ToDouble(buffer.ConvertEndianNess(), 0);
         }
         
         // Dynamic size types

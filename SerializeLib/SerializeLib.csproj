@@ -14,9 +14,9 @@
         <PackageLicenseUrl>https://github.com/Mylo-Softworks/SerializeLib/blob/master/LICENSE</PackageLicenseUrl>
         <RepositoryUrl>https://github.com/Mylo-Softworks/SerializeLib</RepositoryUrl>
         <PublishRepositoryUrl>true</PublishRepositoryUrl>
-        <Version>1.0.9</Version>
-        <PackageReleaseNotes>Update 1.0.9
-+ Remove null-indicator byte for structs</PackageReleaseNotes>
+        <Version>1.1.0</Version>
+        <PackageReleaseNotes>Update 1.1.0
++ User-selected big/little endian.</PackageReleaseNotes>
         <PackageTags>serialization</PackageTags>
         
     </PropertyGroup>
