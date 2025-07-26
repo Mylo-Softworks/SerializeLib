@@ -14,9 +14,9 @@
         <PackageLicenseUrl>https://github.com/Mylo-Softworks/SerializeLib/blob/master/LICENSE</PackageLicenseUrl>
         <RepositoryUrl>https://github.com/Mylo-Softworks/SerializeLib</RepositoryUrl>
         <PublishRepositoryUrl>true</PublishRepositoryUrl>
-        <Version>1.1.0</Version>
-        <PackageReleaseNotes>Update 1.1.0
-+ User-selected big/little endian.</PackageReleaseNotes>
+        <Version>1.2.0</Version>
+        <PackageReleaseNotes>Update 1.2.0
++ Added PartialStream from Serializelib archive, now included in base library. Partialstreams allow for proxying streams to view a part of the stream as if it were a full stream, this allows for working with large files without keeping anything in ram</PackageReleaseNotes>
         <PackageTags>serialization</PackageTags>
         
     </PropertyGroup>
